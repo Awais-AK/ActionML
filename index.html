@@ -16,9 +16,35 @@
       <header class="w3-container w3-center w3-padding-32"> 
         <h1><b> Demo Website </b></h1>
         <p>Welcome to the page of <span class="w3-tag"> Someone </span></p>
-        <p>Page No. </p>
       </header>
+      <form id="frm1" >
+        User Id : <input type="text" name="userId" value=""><br>
+        Page no:<input type="text" name="page" value=""><br><br>
+      </form> 
+      <button onclick="myFunction()">Send Request</button>
+
+      <p id="demo"></p>
     </div>
   </body>
+  <script>
+    function myFunction() {
+      var x = document.getElementById("frm1");
+      var page = x.elements.page.value;
+      var userId = x.elements.userId.value;
+      console.log(userId);
+      console.log(page);
+      
+      var xhttp = new XMLHttpRequest();
+      xhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+          document.getElementById("demo").innerHTML = this.responseText;
+        }
+      };
+      xhttp.open("GET", "http://localhost:3000/reportview?userId="+userId+"&page="+page, true);
+      xhttp.send();
+
+      // document.getElementById("demo").innerHTML = text;
+    }
+  </script>
 
 </html>
