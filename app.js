@@ -1,6 +1,7 @@
 var express = require('express');
 var app = express();
 var request = require("request")
+var count = 0;
 
 app.get('/reportview',function(req,res){  // <- Recieve request like http://localhost:3000/reportview?userId=3123&page=44342
     console.log(req.query);
@@ -42,60 +43,62 @@ app.get('/reportview',function(req,res){  // <- Recieve request like http://loca
         }
     })
 
-    var data2 = {
-        "event": "$set",
-        "entityItem": "item",
-        "entityId": req.query.page,  
-        "properties": {
-             "category" : ["elctronics","covid"]
-         },
-         "eventTime": isoDate
-    }
+    // var data2 = {
+    //     "event": "$set",
+    //     "entityItem": "item",
+    //     "entityId": req.query.page,  
+    //     "properties": {
+    //          "category" : ["elctronics","covid"]
+    //      },
+    //      "eventTime": isoDate
+    // }
 
-    console.log(data2);
+    // console.log(data2);
 
-    request({
-        url: url,
-        method: "POST",
-        headers: {
-            "content-type": "application/json",
-            },
-        json: data2,
-    }, function (error, response, body) {
-        if (!error ) { // created
-            console.log(body)
-            console.log("response.statusCode: " + response.statusCode)
-            console.log("response.statusText: " + response.statusMessage)
-        }
-        else {
+    // request({
+    //     url: url,
+    //     method: "POST",
+    //     headers: {
+    //         "content-type": "application/json",
+    //         },
+    //     json: data2,
+    // }, function (error, response, body) {
+    //     if (!error ) { // created
+    //         console.log(body)
+    //         console.log("response.statusCode: " + response.statusCode)
+    //         console.log("response.statusText: " + response.statusMessage)
+    //     }
+    //     else {
 
-            console.log("error: " + error)
-            console.log("response.statusCode: " + response.statusCode)
-            console.log("response.statusText: " + response.statusMessage)
-        }
-    })
+    //         console.log("error: " + error)
+    //         console.log("response.statusCode: " + response.statusCode)
+    //         console.log("response.statusText: " + response.statusMessage)
+    //     }
+    // })
 
 
     // -> Train before query
 
-    request({
-        url: "http://localhost:9090/engines/test/jobs",
-        method: "POST",
-        json: {},
-    }, function (error, response, body) {
-        if (!error ) {
-            console.log(body)
-            console.log("response.statusCode: " + response.statusCode)
-            console.log("response.statusText: " + response.statusMessage)
-        }
-        else {
-    
-            console.log("error: " + error)
-        }
-    });
+    if(count%4 === 0){
+        request({
+            url: "http://localhost:9090/engines/test/jobs",
+            method: "POST",
+            json: {},
+        },function (error, response, body) {
+            if (!error ) {
+                console.log(body)
+                console.log("response.statusCode: " + response.statusCode)
+                console.log("response.statusText: " + response.statusMessage)
+            }
+            else {
+        
+                console.log("error: " + error)
+            }
+        });
+    }
 
-    // -> Query 
-
+    // // -> Query 
+    count = count+1;
     request({
         url: "http://localhost:9090/engines/test/queries",
         method: "POST",
@@ -112,8 +115,9 @@ app.get('/reportview',function(req,res){  // <- Recieve request like http://loca
 
             console.log("error: " + error)
         }
-    })
-    res.end(JSON.stringify(data1)+JSON.stringify(data2));
+    });
+
+    res.end(JSON.stringify(data1));
 });
 
 // -> Empty json for training
@@ -136,8 +140,7 @@ var timer = setInterval(function(){
             console.log("error: " + error)
         }
     })    
-},3000);
+},4000);
 
 
 app.listen(3000);
-
