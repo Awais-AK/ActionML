@@ -4,7 +4,9 @@ function myFunction() {
     var userId = x.elements.userId.value;
     console.log(userId);
     console.log(page);
-    localStorage.setItem('userId',userId);
+    if(userId !== ""){
+      localStorage.setItem('userId',userId);
+    }
     
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function() {
